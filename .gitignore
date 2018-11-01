@@ -1,0 +1,9 @@
+# Generated files
+error
+log
+src/votingapp/deploy/
+
+# Visual studio code
+ .vscode/
+
+
