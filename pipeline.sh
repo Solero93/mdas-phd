@@ -1,9 +1,7 @@
 APP_NAME='votingapp'
 
-VOTING_APP_PATH='./src/'$APP_NAME''
-
 build() {
-    pushd $VOTING_APP_PATH
+    pushd './src/'$APP_NAME''
     ./deps.sh
     rm -rf ./deploy
     go build -o ./deploy/votingapp || return 1
@@ -12,7 +10,7 @@ build() {
 }
 
 run() {
-    pushd $VOTING_APP_PATH
+    pushd './src/'$APP_NAME''
     pid=$(ps | grep $APP_NAME | awk '{print $1}' | head -1)
     kill -9 $pid || true
     ./deploy/$APP_NAME &
@@ -50,10 +48,22 @@ test() {
 
 }
 
+python_test() {
+    pushd './test/'$APP_NAME''
+    pip install -r ./requirements.txt
+    if [ $(python3.6 ./votingapp.py) ]; then
+        return 1;
+    else
+        return 0;
+    fi
+    popd
+}
+
+
 if build > log 2> error; then
     echo "Build Completed"
     run
-    if test; then
+    if test && python_test; then
         echo "Test Passed"
     else
         echo "Test Failed"
