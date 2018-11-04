@@ -6,11 +6,11 @@ APP_URL = 'http://localhost:8080/vote'
 
 
 def start_voting(options):
-    return requests.post(APP_URL, data={'topics': options})
+    return requests.post(APP_URL, json={'topics': options})
 
 
 def put_vote(option):
-    return requests.put(APP_URL, data={'topic': option})
+    return requests.put(APP_URL, json={'topic': option})
 
 
 def finish_voting():
@@ -19,7 +19,7 @@ def finish_voting():
 
 class TestVotingApp(unittest.TestCase):
     def test_votingapp(self):
-        options = ["Bash", "Python", "Go"]
+        options = ['Bash', 'Python', 'Go']
 
         start_voting(options)
 

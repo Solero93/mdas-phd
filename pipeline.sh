@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 APP_NAME='votingapp'
 
 build() {
@@ -11,7 +12,9 @@ build() {
 
 run() {
     pushd './src/'$APP_NAME''
-    pid=$(ps | grep $APP_NAME | awk '{print $1}' | head -1)
+    # [.]/deploy/'$APP_NAME' is a hack to exclude the grep itself from processes
+    # https://unix.stackexchange.com/questions/74185/how-can-i-prevent-grep-from-showing-up-in-ps-results
+    pid=$(ps aux | grep '[.]/deploy/'$APP_NAME'' | awk '{print $2}' | head -1)
     kill -9 $pid || true
     ./deploy/$APP_NAME &
     popd
@@ -22,27 +25,34 @@ test() {
         curl \
             --url 'http://localhost:8080/vote' \
             --request $1 \
-            --data "$2" \
+            --data $2 \
             --header 'Content-Type: application/json' \
             --silent
     }
-    options='["Bash", "Python", "Go"]'
-    topics='{"topics":'$options'}'
+    start_voting() {
+        http_client POST '{"topics":'$1'}' > /dev/null
+    }
+    put_vote() {
+        http_client PUT '{"topic":"'$1'"}' > /dev/null
+    }
+    finish_voting() {
+        http_client DELETE
+    }
+    options='["Bash","Python","Go"]'
     expectedWinner='Bash'
-
-    echo "Given voting topics $topics, When vote for $options, Then winner is $expectedWinner"
-    http_client POST $topics
+    echo "Given voting topics $options, When vote for [Bash Bash Bash Python], Then winner is $expectedWinner"
+    start_voting $options
 
     for option in Bash Bash Bash Python
     do
-        http_client PUT '{"topic":"'$option'"}'
+        put_vote $option
     done
-
-    winner=$(http_client DELETE | jq -r '.winner')
+    winner=$(finish_voting | jq -r '.winner')
 
     if [ "$expectedWinner" = "$winner" ]; then
         return 0;
     else
+        (>&2 echo "Expected Winner is $winner and should be $expectedWinner")
         return 1;
     fi
 
@@ -50,15 +60,14 @@ test() {
 
 python_test() {
     pushd './test/'$APP_NAME''
-    pip install -r ./requirements.txt
-    if [ $(python3.6 ./votingapp.py) ]; then
-        return 1;
-    else
+    pip3 install -r ./requirements.txt --quiet
+    if python3 ./votingapp.py; then
         return 0;
+    else
+        return 1;
     fi
     popd
 }
-
 
 if build > log 2> error; then
     echo "Build Completed"
