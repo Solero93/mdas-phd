@@ -1,6 +1,6 @@
 # Generated files
-error
-log
+*.error
+*.log
 src/votingapp/deploy/
 
 # Visual studio code

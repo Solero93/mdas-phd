@@ -12,28 +12,27 @@ build() {
 
 run() {
     pushd './src/'$APP_NAME''
-    # [.]/deploy/'$APP_NAME' is a hack to exclude the grep itself from processes
+    # [v]otingapp is a hack to exclude the grep itself from processes
     # https://unix.stackexchange.com/questions/74185/how-can-i-prevent-grep-from-showing-up-in-ps-results
-    pid=$(ps aux | grep '[.]/deploy/'$APP_NAME'' | awk '{print $2}' | head -1)
-    kill -9 $pid || true
+    pid=$(ps aux | grep [v]otingapp | awk '{print $1}' | head -1)
+    kill -9 $pid || echo "Nothing to kill"
     ./deploy/$APP_NAME &
+    sleep 2
     popd
 }
 
 test() {
     http_client() {
-        curl \
-            --url 'http://localhost:8080/vote' \
-            --request $1 \
-            --data $2 \
-            --header 'Content-Type: application/json' \
-            --silent
+        curl --url 'http://localhost:8080/vote'\
+            --request $1\
+            --data "$2"\
+            --header 'Content-Type: application/json'
     }
     start_voting() {
-        http_client POST '{"topics":'$1'}' > /dev/null
+        http_client POST '{"topics":'$1'}'
     }
     put_vote() {
-        http_client PUT '{"topic":"'$1'"}' > /dev/null
+        http_client PUT '{"topic":"'$1'"}'
     }
     finish_voting() {
         http_client DELETE
@@ -69,13 +68,16 @@ python_test() {
     popd
 }
 
-if build > log 2> error; then
+if build > build.log 2> build.error; then
     echo "Build Completed"
-    run
-    if test && python_test; then
-        echo "Test Passed"
+    if run > run.log 2> run.error; then
+        if test && python_test; then
+            echo "Test Passed"
+        else
+            echo "Test Failed"
+        fi
     else
-        echo "Test Failed"
+        echo "Run Failed"
     fi
 else
     echo "FAILED"

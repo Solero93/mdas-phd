@@ -1,6 +1,6 @@
-FROM ubuntu:18.04
+FROM alpine:3.8
 
 WORKDIR /app
-COPY deploy .
+COPY ./deploy .
 
 ENTRYPOINT [ "./votingapp" ]

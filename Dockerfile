@@ -1,4 +1,5 @@
-FROM ubuntu:18.04
+FROM alpine:3.8
 
-RUN apt-get update && apt-get install -y git golang curl jq
+WORKDIR /app
 
+RUN apk update && apk add git go libc-dev curl jq python3 bash
