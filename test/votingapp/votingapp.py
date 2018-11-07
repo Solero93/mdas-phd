@@ -2,7 +2,8 @@ import unittest
 
 import requests
 
-APP_URL = 'http://localhost:8080/vote'
+# TODO Accept parameter from bash script for the URL
+APP_URL = 'http://myvotingapp:8080/vote'
 
 
 def start_voting(options):
