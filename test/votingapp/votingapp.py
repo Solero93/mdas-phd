@@ -35,7 +35,8 @@ class TestVotingApp(unittest.TestCase):
 
             winner = (finish_voting().json())['winner']
 
-            self.assertEqual(winner, expected_winner)
+            self.assertEqual(winner, expected_winner,
+                             msg=f"Expected Winner is {winner} and should be {expected_winner}")
 
 
 if __name__ == '__main__':

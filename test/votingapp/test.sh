@@ -9,7 +9,8 @@ test() {
             --request $1\
             --data "$2"\
             --header 'Content-Type: application/json'\
-            --silent
+            --silent\
+            --retry 5
     }
     start_voting() {
         http_client POST '{"topics":'$1'}'
@@ -35,13 +36,13 @@ test() {
         echo "Bash Test Completed!"
         return 0;
     else
+        (>&2 echo "Bash Test Failed")
         (>&2 echo "Expected Winner is $winner and should be $expectedWinner")
         return 1;
     fi
 
 }
 
-# TODO pass APP_PATH to Python
 python_test() {
     pip3 install -r ./requirements.txt --quiet
     if python3 ./votingapp.py; then
@@ -52,7 +53,6 @@ python_test() {
         return 1;
     fi
 }
-# TODO Añadir política de reintentos
 test
 python_test
 
