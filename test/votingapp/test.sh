@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-APP_URL=${VOTING_URL:-'http://myvotingapp:8080/vote'}
+export APP_URL='http://myvotingapp:8080/vote'
 
 test() {
     http_client() {
@@ -31,11 +31,12 @@ test() {
     done
     winner=$(finish_voting | jq -r '.winner')
 
-    if [ "$expectedWinner" = "$winner" ]; then
-        exit 0;
+    if [[ "$expectedWinner" = "$winner" ]]; then
+        echo "Bash Test Completed!"
+        return 0;
     else
         (>&2 echo "Expected Winner is $winner and should be $expectedWinner")
-        exit 1;
+        return 1;
     fi
 
 }
@@ -44,9 +45,11 @@ test() {
 python_test() {
     pip3 install -r ./requirements.txt --quiet
     if python3 ./votingapp.py; then
-        exit 0;
+        echo "Python Test Completed!"
+        return 0;
     else
-        exit 1;
+        (>&2 echo "Python Test Failed")
+        return 1;
     fi
 }
 # TODO Añadir política de reintentos

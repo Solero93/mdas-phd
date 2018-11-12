@@ -2,7 +2,7 @@
 set -e
 # TODO Define builder_image_name, image_name and username variables to make it prettier
 image='votingapp'
-registry=${REGISTRY:-'solero93'}
+# registry=${REGISTRY:-'solero93'}
 # export REGISTRY='blablabla'
 network='votingapp-network'
 

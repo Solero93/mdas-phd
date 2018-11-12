@@ -21,4 +21,4 @@ WORKDIR /app
 COPY --from=builder ./deploy .
 
 # Añadimos sleep para simular que el servidor tarda en levantarse
-ENTRYPOINT [ "sleep 10 && ./votingapp" ]
+ENTRYPOINT [ "./votingapp" ]

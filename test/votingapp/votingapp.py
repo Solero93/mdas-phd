@@ -1,9 +1,8 @@
 import unittest
-
 import requests
+import os
 
-# TODO Accept parameter from bash script for the URL
-APP_URL = 'http://myvotingapp:8080/vote'
+APP_URL = os.environ["APP_URL"]
 
 
 def start_voting(options):
