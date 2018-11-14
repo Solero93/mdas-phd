@@ -1,28 +1,14 @@
 #!/usr/bin/env bash
 set -e
-# TODO Define builder_image_name, image_name and username variables to make it prettier
-image='votingapp'
-# registry=${REGISTRY:-'solero93'}
-# export REGISTRY='blablabla'
-network='votingapp-network'
 
-# Creamos una red privada de contenedores
-docker network create $network || true
+# Parar todos los containers de este docker compose
+docker-compose down
+# Levanto tanto test como votingapp, pero test me la suda
+docker-compose up -d --build
+# Si esto revienta, el pipeline parará y no sigue
+docker-compose run --rm votingapp-test
+# Push con el nombre en docker-compose.yml
+docker-compose push votingapp
 
-# BUILD
-# Crear el docker
-docker build -t solero93/votingapp ./src/votingapp/
 
-# INTEGRATION TESTS
-# Borrar si ya existe
-docker rm -f myvotingapp || true
-# Ejecutar detached
-docker run --name myvotingapp -d -p 8085:8080 --network $network solero93/votingapp
-
-docker build -t votingapp-test ./test/votingapp
-# Como el test se ejecuta y acaba, pues no hace falta el detached
-# Pero lo borramos cuando haya acabado
-docker run --rm --network $network -e VOTING_URL='http://myvotingapp:8080/vote' votingapp-test
-
-# DELIVERY
-docker push solero93/votingapp
+# REGISTRY=solero93 ./docker-pipeline.sh

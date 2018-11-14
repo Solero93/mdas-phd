@@ -1,11 +1,9 @@
 #!/usr/bin/env bash
 
-export APP_URL='http://myvotingapp:8080/vote'
-
 test() {
     http_client() {
         # myvotingapp es resuelto por el DNS de Docker
-        curl --url $APP_URL\
+        curl --url $VOTING_URL\
             --request $1\
             --data "$2"\
             --header 'Content-Type: application/json'\

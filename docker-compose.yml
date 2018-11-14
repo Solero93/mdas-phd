@@ -1,0 +1,39 @@
+# docker-compose up --build => Haz el build antes del run
+# docker-compose up -d => Detached from console
+# docker-compose ps => mirar procesos
+# docker-compose es local al archivo
+# docker-compose -f ruta_archivo => ejecutar otro docker-compose.yaml
+# docker-compose logs => ver todolo que saca la aplicación
+# docker-compose stop
+# docker-compose rm
+# docker-compose down
+
+version: "3.6"
+
+# En ejecución es los containers, en build las imágenes
+services:
+# Se usa por ejemplo en DNS
+  votingapp:
+    # Mirar si existe REGISTRY, si no, ponle solero93
+    image: ${REGISTRY-solero93}/votingapp
+    build:
+      context: ./src/votingapp-redis
+    # Realmente no es necesario, porque ya lo detecta
+      dockerfile: ./Dockerfile
+    ports:
+      - 8085:8080
+    environment:
+      REDIS: database:63799
+  
+  database:
+    image: redis
+    # Es opcional, porque ya está mapeado - solo es para que desde fuera de la red interna de los dockers podamos conectarnos
+    ports:
+        - 6379:6379
+  
+  votingapp-test:
+    image: votingapp-test
+    build:
+      context: ./test/votingapp
+    environment:
+      VOTING_URL: http://votingapp:8080/vote
