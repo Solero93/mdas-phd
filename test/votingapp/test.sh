@@ -42,7 +42,6 @@ test() {
 }
 
 python_test() {
-    pip3 install -r ./requirements.txt --quiet
     if python3 ./votingapp.py; then
         echo "Python Test Completed!"
         return 0;

@@ -2,7 +2,7 @@
 
 # BUILDER
 FROM golang:alpine3.8 AS builder
-RUN apk update && apk add git python3 bash
+RUN apk update && apk add git
 
 # Bajo primero las dependencias, porque así este layer no se regenera
 # Los COPY son los que podrían hacer que el hash cambie
