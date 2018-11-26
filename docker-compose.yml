@@ -12,6 +12,14 @@ version: "3.6"
 
 # En ejecución es los containers, en build las imágenes
 services:
+  gateway:
+    image: ${REGISTRY-solero93}/my-gateway:${TAG-latest}
+    build:
+      context: ./src/gateway
+    ports:
+      - 8080:8080
+    restart: always
+
 # Se usa por ejemplo en DNS
   votingapp:
     # Mirar si existe REGISTRY, si no, ponle solero93
