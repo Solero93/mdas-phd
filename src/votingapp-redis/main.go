@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -24,7 +23,7 @@ func main() {
 	e.DELETE(api, log(finishVoting))
 	e.GET("/ws", log(serveWs))
 
-	e.Logger.Fatal(e.Start(fmt.Sprintf(":%v", getenv("VOTINGAPP_PORT", "8080"))))
+	e.Logger.Fatal(e.Start(":80"))
 }
 
 func sendMessage(value interface{}) error {

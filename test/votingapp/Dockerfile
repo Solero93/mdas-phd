@@ -1,4 +1,4 @@
-FROM python3.7:alpine3.8
+FROM python:alpine3.8
 RUN apk update && apk add bash curl jq
 
 COPY requirements.txt .

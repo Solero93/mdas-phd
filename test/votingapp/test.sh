@@ -50,7 +50,7 @@ python_test() {
         return 1;
     fi
 }
-test
-python_test
+#test
+#python_test
 
 # Reventar disco en Docker -> Preferences -> Disk -> Reveal in Finder si te ocupa mucho

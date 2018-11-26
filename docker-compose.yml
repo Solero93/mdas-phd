@@ -15,10 +15,10 @@ services:
 # Se usa por ejemplo en DNS
   votingapp:
     # Mirar si existe REGISTRY, si no, ponle solero93
-    image: ${REGISTRY-solero93}/votingapp
+    image: ${REGISTRY-solero93}/votingapp:${TAG-latest}
     build:
       context: ./src/votingapp-redis
-    # Realmente no es necesario, porque ya lo detecta
+      # Realmente no es necesario, porque ya lo detecta
       dockerfile: ./Dockerfile
     ports:
       - 8085:8080
